@@ -1,10 +1,11 @@
 #include "PriorityQueue.h"
-#include "List.h"
+#include "Heap.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <string>
 #include <sstream>
+
 using namespace std;
 
 template<typename Type>
@@ -88,10 +89,5 @@ int main()
 {
 	//scheduler();
 	priorityQueueTest("schedule.txt");
-	List<int> l;
-	l.pushBack(3);
-	l.pushBack(4);
-	l.popBack();
-	l.displayList();
 	return 0;
 }
