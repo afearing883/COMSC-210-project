@@ -172,7 +172,7 @@ Type List<Type>::popFront()
 }
 
 template<typename Type>
-Type List<Type>::popBack()
+Type List<Type>::popBack()//doesn't work 2018.11.17
 {
 	Type backValue = back();
 	ListNode<Type> *nodePtr = head;
