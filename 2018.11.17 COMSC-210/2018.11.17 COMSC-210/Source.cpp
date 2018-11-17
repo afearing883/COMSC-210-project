@@ -38,7 +38,7 @@ Status:  complete
 #include <iostream>
 #include <vector>
 #include "QueueA.h"
-#include "Scheduler.h"
+#include "PriorityQueue.h"
 #include <fstream>
 #include <string>
 #include <sstream>

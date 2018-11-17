@@ -8,19 +8,22 @@ template <typename Type>
 class PriorityQueue
 {
 private:
-	int priorityLevels;
-	int tasks;
-	std::vector<QueueA<Type>> scheduleArray(priorityLevels);
+	int size;
+	std::vector<QueueA<Type>> queueVector;
 public:
-	PriorityQueue(int p = 4) :priorityLevels = p, tasks = 0
+	PriorityQueue(int p) : size = 0
 	{
+		queueVector.resize(p);
 	}
 	void push(int priorityLevel, const Type& value)
 	{
-		//check range
-		scheduleArray.at(priorityLevel).push(value);
+		if (priorityLevel >= queueVector.size())
+		{
+			throw Exception();
+		}
+		queueVector.at(priorityLevel).push(value);
 	}
-	Type top()
+	Type pop()
 	{
 		if (empty())
 		{
@@ -30,12 +33,13 @@ public:
 		for (; scheduleArray.at(i).empty(); ++i)
 		{
 		}
-		return scheduleArray.at(i).pop();
+		--size;
+		return queueVector.at(i).pop();
 	}
 	bool empty()
 	{
 		bool emptySchedule = true;
-		for (int i = 0; emptySchedule = scheduleArray.at(i).empty(); ++i)
+		for (int i = 0; i < queueVector.size() && emptySchedule = scheduleArray.at(i).empty(); ++i)
 		{
 		}
 		return emptySchedule;
