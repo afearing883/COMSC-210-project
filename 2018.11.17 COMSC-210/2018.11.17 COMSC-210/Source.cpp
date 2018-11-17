@@ -1,4 +1,5 @@
 #include "PriorityQueue.h"
+#include "List.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -87,5 +88,10 @@ int main()
 {
 	//scheduler();
 	priorityQueueTest("schedule.txt");
+	List<int> l;
+	l.pushBack(3);
+	l.pushBack(4);
+	l.popBack();
+	l.displayList();
 	return 0;
 }
