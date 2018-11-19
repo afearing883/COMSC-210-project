@@ -1,7 +1,7 @@
 #ifndef HEAP_H
 #define HEAP_H
 #include "Exception.h"
-
+#include <cmath>
 template<typename Type>
 class Heap
 {
@@ -24,9 +24,10 @@ private:
 		}
 	};
 	int heapSize;
-	
-	HeapNode<Type>* lastInsertedPtr;
+
 	HeapNode<Type>* root;
+	HeapNode<Type>* lastNodeInsertedPtr;
+	void removeLastInsertedNode(int);
 public:
 	Heap()
 	{
@@ -43,8 +44,55 @@ public:
 	}
 	void push(const Type&);
 	void swapNodes(HeapNode<Type>*, HeapNode<Type>*);
+	void swapValues(HeapNode<Type>*, HeapNode<Type>*);
+	Type pop();
 };
 
+
+template<typename Type>
+void Heap<Type>::removeLastInsertedNode(int sizeAfterPop)
+{
+	HeapNode<Type>* nodePtr = nullptr;
+	HeapNode<Type>* nextNodePtr = nullptr;
+	HeapNode<Type>* oldLastNodeInsertedPtr = lastNodeInsertedPtr;
+	if (log2(sizeAfterPop + 1) == static_cast<int>(log2(sizeAfterPop + 1)))//perfect tree. last inserted is now on level above OR only root node
+	{
+		nodePtr = root;
+		while (nextNodePtr = nodePtr->rightChildPtr)
+		{
+			nodePtr = nextNodePtr;
+		}
+		if (lastNodeInsertedPtr != root)
+		{
+			lastNodeInsertedPtr->parentPtr->leftChildPtr = nullptr;
+		}
+		lastNodeInsertedPtr = nodePtr;
+	}
+	else if ((sizeAfterPop) % 2)//complete tree after removal of old last inserted node. removing from leftChild
+	{
+		nodePtr = lastNodeInsertedPtr;
+		while (nodePtr == nodePtr->parentPtr->leftChildPtr)
+		{
+			nodePtr = nodePtr->parentPtr;
+		}
+		nodePtr = nodePtr->parentPtr->leftChildPtr;
+		while (nextNodePtr = nodePtr->rightChildPtr)
+		{
+			nodePtr = nextNodePtr;
+		}
+		lastNodeInsertedPtr->parentPtr->leftChildPtr = nullptr;
+		lastNodeInsertedPtr = nodePtr;
+	}
+	else//incomplete tree after removal of old last inserted node. removing from rightChild
+	{
+		lastNodeInsertedPtr->parentPtr->rightChildPtr = nullptr;
+		lastNodeInsertedPtr = lastNodeInsertedPtr->parentPtr->leftChildPtr;
+	}
+	delete oldLastNodeInsertedPtr;
+	oldLastNodeInsertedPtr = nullptr;
+	nodePtr = nullptr;
+	nextNodePtr = nullptr;
+}
 template<typename Type>
 void Heap<Type>::swapNodes(HeapNode<Type>* node1Ptr, HeapNode<Type>* node2Ptr)
 {
@@ -63,15 +111,23 @@ void Heap<Type>::swapNodes(HeapNode<Type>* node1Ptr, HeapNode<Type>* node2Ptr)
 	node1Ptr->parentPtr = node2Ptr->parentPtr;
 	node2Ptr->parentPtr = tempPtr;
 
-	if (node1Ptr == head)
+	if (node1Ptr == root)
 	{
-		head = node2Ptr;
+		root = node2Ptr;
 	}
-	else if (node2ptr == head)
+	else if (node2Ptr == root)
 	{
-		head = node1Ptr;
+		root = node1Ptr;
 	}
 
+}
+
+template<typename Type>
+void Heap<Type>::swapValues(HeapNode<Type>* node1Ptr, HeapNode<Type>* node2Ptr)
+{
+	Type tempValue = node2Ptr->value;
+	node2Ptr->value = node1Ptr->value;
+	node1Ptr->value = tempValue;
 }
 
 
@@ -103,5 +159,32 @@ void Heap<Type>::push(const Type& v)
 		}
 	}
 }
+
+
+
+
+template<typename Type>
+Type Heap<Type>::pop()
+{
+	if (empty())
+	{
+		throw Exception();
+	}
+	Type val = root->value;
+	HeapNode<Type>* nodePtr = root;
+	HeapNode<Type>* nextNodePtr = nullptr;
+
+	removeLastInsertedNode(heapSize - 1);
+
+	while ((nextNodePtr = ((nodePtr->rightChildPtr && nodePtr->leftChildPtr) && (nodePtr->rightChildPtr->value > nodePtr->leftChildPtr->value)) || !nodePtr->rightChildPtr ? nodePtr->leftChildPtr : nodePtr->rightChildPtr) && nextNodePtr->value < nodePtr->value)
+	{
+		swapValues(nodePtr, nextNodePtr);
+		nodePtr = nextNodePtr;
+	}
+
+	--heapSize;
+	return val;
+}
+
 
 #endif // !HEAP_H
