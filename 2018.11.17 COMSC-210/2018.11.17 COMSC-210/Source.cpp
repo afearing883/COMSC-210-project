@@ -32,35 +32,7 @@ void printVect(const vector<Type>& v, ostream& os = cout)
 
 
 const int PRIORITY_LEVELS = 4;
-void scheduler()
-{
-	ifstream inFile;
-	inFile.open("schedule.txt");
-	string s, processName;
-	int priorityLevel = 0;
 
-	QueueA<string> scheduleArray[PRIORITY_LEVELS];
-	if (inFile)
-	{
-		while (getline(inFile, s))
-		{
-			stringstream(s) >> priorityLevel >> processName;
-			scheduleArray[priorityLevel].push(processName);
-		}
-		for (int i = 0; i < PRIORITY_LEVELS; ++i)
-		{
-			while (!scheduleArray[i].empty())
-			{
-				cout << scheduleArray[i].pop() << endl;
-			}
-		}
-	}
-	else
-	{
-		cout << "file not open" << endl;
-	}
-	inFile.close();
-}
 
 
 void priorityQueueTest(const string& filename)
@@ -80,14 +52,23 @@ void priorityQueueTest(const string& filename)
 	}
 	while (!pq.empty())
 	{
-		cout << pq.pop();
+		cout << pq.pop() << endl;
 	}
 }
 
 
 int main()
 {
-	//scheduler();
 	priorityQueueTest("schedule.txt");
+	Heap<int> h;
+	h.push(3);
+	h.push(17);
+	h.push(43);
+	h.push(4);
+	h.push(2);
+	cout << h.pop() << endl;
+	cout << h.pop() << endl;
+	cout << h.pop() << endl;
+	cout << h.pop() << endl;
 	return 0;
 }
