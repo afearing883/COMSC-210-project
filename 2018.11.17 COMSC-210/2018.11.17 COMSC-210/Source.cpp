@@ -1,10 +1,11 @@
-
 #include "PriorityQueue.h"
+#include "Heap.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <string>
 #include <sstream>
+
 using namespace std;
 
 template<typename Type>

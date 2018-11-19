@@ -63,8 +63,6 @@ List<Type>::~List()
 	{
 		popFront();
 	}
-	head = nullptr;
-	tail = nullptr;
 }
 
 template<typename Type>
@@ -93,7 +91,7 @@ void List<Type>::pushFront(const Type& num)
 {
 	ListNode<Type>* newNode = new ListNode<Type>(num, head);
 	head = newNode;
-	if (!size())
+	if (!listSize)
 	{
 		tail = newNode;
 	}
@@ -104,7 +102,7 @@ template<typename Type>
 void List<Type>::pushBack(const Type& num)
 {
 	ListNode<Type>* newNode = new ListNode<Type>(num, nullptr);
-	if (!size())
+	if (!listSize)
 	{
 		head = newNode;
 	}
@@ -115,7 +113,6 @@ void List<Type>::pushBack(const Type& num)
 	tail = newNode;
 	++listSize;
 }
-
 
 template<typename Type>
 void List<Type>::displayList() const
@@ -167,11 +164,15 @@ Type List<Type>::popFront()
 	delete nodePtr;
 	nodePtr = nullptr;
 	--listSize;
+	if (!listSize)
+	{
+		tail = nullptr;
+	}
 	return frontValue;
 }
 
 template<typename Type>
-Type List<Type>::popBack()
+Type List<Type>::popBack()//doesn't work 2018.11.17
 {
 	Type backValue = back();
 	ListNode<Type> *nodePtr = head;
@@ -181,14 +182,16 @@ Type List<Type>::popBack()
 		prevPtr = nodePtr;
 		nodePtr = nodePtr->next;
 	}
-	if (size() == 1)
-	{
-		head = nullptr;
-	}
+
 	tail = prevPtr;
 	delete nodePtr;
 	nodePtr = nullptr;
+	prevPtr = nullptr;
 	--listSize;
+	if (!listSize)
+	{
+		head = nullptr;
+	}
 	return backValue;
 }
 
