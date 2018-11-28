@@ -93,6 +93,9 @@ int main()
 	function_array[1]();
 	function_array[i]();
 
+	ss.clear();
+	ss.str("");
+
 
 	return 0;
 }
