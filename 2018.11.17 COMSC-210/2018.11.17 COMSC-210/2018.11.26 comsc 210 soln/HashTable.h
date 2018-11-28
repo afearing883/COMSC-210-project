@@ -4,6 +4,7 @@
 
 const long long unsigned C = 581869333;
 /*
+const unsigned int C = 581869333;
 unsigned int hash_M(unsigned n, unsigned m)
 
 {
@@ -50,13 +51,14 @@ public:
 
 size_t HashTable::hash(long long unsigned val, long long unsigned m)
 {
-	long long unsigned shift = (32 - m) / 2;
+	long long unsigned shift = (sizeof(val)*8 - m) / 2;
 	return ((C*val) >> shift)&((1 << m) - 1);//(1 shifted left by m) (-1 flips all the bits except the most significant)
 }
 
 
 void HashTable::push(long long unsigned val)
 {
+	size_t h = hash(val, 10);
 
 }
 
