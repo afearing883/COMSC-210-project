@@ -13,14 +13,12 @@ private:
 		HeapNode<Type>* leftChildPtr;
 		HeapNode<Type>* rightChildPtr;
 		HeapNode<Type>* parentPtr;
-		HeapNode<Type>* lastInserted;
-		HeapNode(const Type& v, HeapNode<Type>* p = nullptr, HeapNode<Type>* l = nullptr, HeapNode<Type>* r = nullptr, HeapNode<Type>* last = nullptr)
+		HeapNode(const Type& v, HeapNode<Type>* p = nullptr, HeapNode<Type>* l = nullptr, HeapNode<Type>* r = nullptr)
 		{
 			value = v;
 			parentPtr = p;
 			leftChildPtr = l;
 			rightChildPtr = r;
-			lastInserted = last;
 		}
 	};
 	int heapSize;
@@ -49,6 +47,7 @@ public:
 };
 
 
+
 template<typename Type>
 void Heap<Type>::removeLastInsertedNode(int sizeAfterPop)
 {
@@ -62,10 +61,7 @@ void Heap<Type>::removeLastInsertedNode(int sizeAfterPop)
 		{
 			nodePtr = nextNodePtr;
 		}
-		if (lastNodeInsertedPtr != root)
-		{
-			lastNodeInsertedPtr->parentPtr->leftChildPtr = nullptr;
-		}
+		lastNodeInsertedPtr->parentPtr->leftChildPtr = nullptr;
 		lastNodeInsertedPtr = nodePtr;
 	}
 	else if ((sizeAfterPop) % 2)//complete tree after removal of old last inserted node. removing from leftChild
@@ -135,29 +131,64 @@ template<typename Type>
 void Heap<Type>::push(const Type& v)
 {
 	HeapNode<Type>* newNode = new HeapNode<Type>(v);
-	HeapNode<Type>* nodePtr;
-	newNode->leftChildPtr = root->leftChildPtr;
-	newNode->rightChildPtr = root->rightChildPtr;
+	HeapNode<Type>* nodePtr = nullptr;
+	HeapNode<Type>* nextNodePtr = nullptr;
 
 	if (empty())
 	{
-		root = new HeapNode<Type>(v);
+		root = newNode;
 	}
 	else
 	{
+		if (log2(heapSize + 1) == static_cast<int>(log2(heapSize + 1)))//perfect tree. want to insert at bottom left of tree
+		{
+			nodePtr = root;
+			while (nextNodePtr = nodePtr->leftChildPtr)
+			{
+				nodePtr = nextNodePtr;
+			}
+			newNode->parentPtr = nodePtr;
+			nodePtr->leftChildPtr = newNode;
 
+		}
+		else if (heapSize % 2)//complete tree. want to insert as cousin
+		{
+			nodePtr = lastNodeInsertedPtr;
+			while (nodePtr == nodePtr->parentPtr->rightChildPtr)
+			{
+				nodePtr = nodePtr->parentPtr;
+			}
+			nodePtr = nodePtr->parentPtr->rightChildPtr;
+			while (nextNodePtr = nodePtr->leftChildPtr)
+			{
+				nodePtr = nextNodePtr;
+			}
+			nodePtr->leftChildPtr = newNode;
+			newNode->parentPtr = nodePtr;
+		}
+		else//incomplete tree. want to insert as sibling
+		{
+			lastNodeInsertedPtr->parentPtr->rightChildPtr = newNode;
+			newNode->parentPtr = lastNodeInsertedPtr->parentPtr;
+		}
 	}
-	while (nodePtr->leftChildPtr || nodePtr->rightChildPtr)
+
+	lastNodeInsertedPtr = newNode;
+
+	nodePtr = newNode;
+	nextNodePtr = nullptr;
+	while (nodePtr->parentPtr && (nodePtr->parentPtr->value > nodePtr->value))
 	{
-		if (nodePtr->leftChildPtr && nodePtr->leftChildPtr->value < nodePtr->value)
-		{
-			swapNodes(nodePtr->leftChildPtr, nodePtr);
-		}
-		else if (nodePtr->rightChildPtr && nodePtr->rightChildPtr->value < nodePtr->value)
-		{
-			swapNodes(nodePtr->rightChildPtr, nodePtr);
-		}
+		swapValues(nodePtr, nodePtr->parentPtr);
+		nodePtr = nodePtr->parentPtr;
 	}
+
+
+	nodePtr = nullptr;
+	nextNodePtr = nullptr;
+
+	++heapSize;
+
 }
 
 
@@ -174,13 +205,24 @@ Type Heap<Type>::pop()
 	HeapNode<Type>* nodePtr = root;
 	HeapNode<Type>* nextNodePtr = nullptr;
 
-	removeLastInsertedNode(heapSize - 1);
-
-	while ((nextNodePtr = ((nodePtr->rightChildPtr && nodePtr->leftChildPtr) && (nodePtr->rightChildPtr->value > nodePtr->leftChildPtr->value)) || !nodePtr->rightChildPtr ? nodePtr->leftChildPtr : nodePtr->rightChildPtr) && nextNodePtr->value < nodePtr->value)
+	if (1 == heapSize)
 	{
-		swapValues(nodePtr, nextNodePtr);
-		nodePtr = nextNodePtr;
+		delete root;
+		root = nullptr;
+		lastNodeInsertedPtr = nullptr;
 	}
+	else
+	{
+		swapValues(root, lastNodeInsertedPtr);
+		removeLastInsertedNode(heapSize - 1);
+		while ((nextNodePtr = ((nodePtr->rightChildPtr && nodePtr->leftChildPtr) && (nodePtr->rightChildPtr->value > nodePtr->leftChildPtr->value)) || !nodePtr->rightChildPtr ? nodePtr->leftChildPtr : nodePtr->rightChildPtr) && nextNodePtr->value < nodePtr->value)
+		{
+			swapValues(nodePtr, nextNodePtr);
+			nodePtr = nextNodePtr;
+		}
+		
+	}
+
 
 	--heapSize;
 	return val;

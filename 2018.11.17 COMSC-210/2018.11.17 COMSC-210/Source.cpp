@@ -30,38 +30,7 @@ void printVect(const vector<Type>& v, ostream& os = cout)
 }
 
 
-
 const int PRIORITY_LEVELS = 4;
-void scheduler()
-{
-	ifstream inFile;
-	inFile.open("schedule.txt");
-	string s, processName;
-	int priorityLevel = 0;
-
-	QueueA<string> scheduleArray[PRIORITY_LEVELS];
-	if (inFile)
-	{
-		while (getline(inFile, s))
-		{
-			stringstream(s) >> priorityLevel >> processName;
-			scheduleArray[priorityLevel].push(processName);
-		}
-		for (int i = 0; i < PRIORITY_LEVELS; ++i)
-		{
-			while (!scheduleArray[i].empty())
-			{
-				cout << scheduleArray[i].pop() << endl;
-			}
-		}
-	}
-	else
-	{
-		cout << "file not open" << endl;
-	}
-	inFile.close();
-}
-
 
 void priorityQueueTest(const string& filename)
 {
@@ -80,14 +49,53 @@ void priorityQueueTest(const string& filename)
 	}
 	while (!pq.empty())
 	{
-		cout << pq.pop();
+		cout << pq.pop() << endl;
 	}
 }
+void a()
+{
+	cout << "calling 'void a()'" << endl;
+}
 
+void b()
+{
+	cout << "calling 'void b()'" << endl;
+}
 
+void c()
+{
+	cout << "calling 'void c()'" << endl;
+}
 int main()
 {
-	//scheduler();
-	priorityQueueTest("schedule.txt");
+	string s;
+	int num = 0;
+	cout << "enter an error code: ";
+	getline(cin, s);
+	stringstream(s) >> num;
+	void(*function_array[150])();
+	unsigned char error_id[150];
+
+	function_array[0] = a;
+	error_id[0] = 3;
+	function_array[1] = b;
+	error_id[1] = 8;
+	function_array[2] = c;
+
+	error_id[2] = 5;
+
+	char i = 0;
+	for (; i < 150 && error_id[i] != num; ++i)
+	{
+	}
+
+	function_array[0]();
+	function_array[1]();
+	function_array[i]();
+
+	ss.clear();
+	ss.str("");
+
+
 	return 0;
 }
