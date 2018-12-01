@@ -30,10 +30,7 @@ void printVect(const vector<Type>& v, ostream& os = cout)
 }
 
 
-
 const int PRIORITY_LEVELS = 4;
-
-
 
 void priorityQueueTest(const string& filename)
 {
@@ -55,20 +52,50 @@ void priorityQueueTest(const string& filename)
 		cout << pq.pop() << endl;
 	}
 }
+void a()
+{
+	cout << "calling 'void a()'" << endl;
+}
 
+void b()
+{
+	cout << "calling 'void b()'" << endl;
+}
 
+void c()
+{
+	cout << "calling 'void c()'" << endl;
+}
 int main()
 {
-	priorityQueueTest("schedule.txt");
-	Heap<int> h;
-	h.push(3);
-	h.push(17);
-	h.push(43);
-	h.push(4);
-	h.push(2);
-	cout << h.pop() << endl;
-	cout << h.pop() << endl;
-	cout << h.pop() << endl;
-	cout << h.pop() << endl;
+	string s;
+	int num = 0;
+	cout << "enter an error code: ";
+	getline(cin, s);
+	stringstream(s) >> num;
+	void(*function_array[150])();
+	unsigned char error_id[150];
+
+	function_array[0] = a;
+	error_id[0] = 3;
+	function_array[1] = b;
+	error_id[1] = 8;
+	function_array[2] = c;
+
+	error_id[2] = 5;
+
+	char i = 0;
+	for (; i < 150 && error_id[i] != num; ++i)
+	{
+	}
+
+	function_array[0]();
+	function_array[1]();
+	function_array[i]();
+
+	ss.clear();
+	ss.str("");
+
+
 	return 0;
 }
