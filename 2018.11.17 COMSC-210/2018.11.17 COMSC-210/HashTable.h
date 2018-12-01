@@ -39,12 +39,14 @@ private:
 		}
 	};
 	std::vector<HashNode> list;
-
+	size_t digits; // 10. want middle 4
 	size_t hash(long long unsigned, long long unsigned);
 public:
-	HashTable(size_t s)
+	HashTable(size_t s, size_t d)
 	{
 		list.resize(s);
+		digits = d;
+
 	}
 	void push(long long unsigned);
 };
