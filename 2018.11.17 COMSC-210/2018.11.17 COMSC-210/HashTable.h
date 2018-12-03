@@ -56,7 +56,7 @@ private:
 	std::string readNumber(const std::string&);
 	size_t findValue(const size_t, long long unsigned);
 public:
-	HashTable(size_t s, size_t d)
+	HashTable(size_t s)
 	{
 		list.resize(s);
 		hashDigits = static_cast<int>(log10(s)) + 1;
@@ -93,7 +93,7 @@ std::string HashTable::readNumber(const std::string& s)
 size_t HashTable::findNextEmpty(size_t currentPos)
 {
 	size_t newOffset = 2;
-	for (; list.at(currentPos).occupied; currentPos += newOffset, currentPos %= list.size(), ++newOffset)
+	for (; list.at(currentPos).occupied; currentPos += 1, currentPos %= list.size(), ++newOffset)
 	{
 	}
 	return currentPos;
@@ -103,11 +103,11 @@ size_t HashTable::findValue(const size_t h, long long unsigned val)
 {
 	size_t currentPos = h;
 	size_t newOffset = 2;
-	bool found = false;
-	for (unsigned hashMatchCount = 0; (found = (val != list.at(currentPos).info.value)) && hashMatchCount != list.at(h).counter; hashMatchCount += (h == list.at(currentPos).info.hashVal), currentPos += newOffset, currentPos %= list.size(), ++newOffset)
+	bool notFound = true;
+	for (unsigned hashMatchCount = 0; !list.at(currentPos).occupied || ((notFound = (val != list.at(currentPos).info.value)) && hashMatchCount != list.at(h).counter); hashMatchCount += (h == list.at(currentPos).info.hashVal), currentPos += 1, currentPos %= list.size(), ++newOffset)
 	{
 	}
-	return found ? currentPos : std::string::npos;
+	return notFound ? std::string::npos : currentPos;
 }
 void HashTable::push(std::string val, long long unsigned filePos)
 {
@@ -122,8 +122,6 @@ void HashTable::push(std::string val, long long unsigned filePos)
 
 }
 
-
-
 long long unsigned HashTable::retrieve(std::string val)
 {
 	val = readNumber(val);
@@ -136,6 +134,8 @@ long long unsigned HashTable::retrieve(std::string val)
 		throw Exception();
 	}
 	--list.at(h).counter;
+	list.at(pos).occupied = false;
+	return list.at(pos).info.fileIndex;
 }
 
 #endif // !HASH_TABLE_H

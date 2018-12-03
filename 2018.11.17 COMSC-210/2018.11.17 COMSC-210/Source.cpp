@@ -1,5 +1,6 @@
 #include "PriorityQueue.h"
 #include "Heap.h"
+#include "HashTable.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -28,73 +29,57 @@ void printVect(const vector<Type>& v, ostream& os = cout)
 	}
 	os << endl;
 }
-
-
-const int PRIORITY_LEVELS = 4;
-
-void priorityQueueTest(const string& filename)
-{
-	ifstream inFile(filename);
-	string s, name;
-	int priorityLevel = 0;
-	PriorityQueue<string> pq(PRIORITY_LEVELS);
-	if (inFile)
-	{
-		while (getline(inFile, s))
-		{
-			stringstream(s) >> priorityLevel >> name;
-			pq.push(priorityLevel, name);
-		}
-
-	}
-	while (!pq.empty())
-	{
-		cout << pq.pop() << endl;
-	}
-}
-void a()
-{
-	cout << "calling 'void a()'" << endl;
-}
-
-void b()
-{
-	cout << "calling 'void b()'" << endl;
-}
-
-void c()
-{
-	cout << "calling 'void c()'" << endl;
-}
-int main()
+const char DELIMITER = ',';
+const size_t FILE_ENTRIES = 50000;
+const string FILENAME = "usdata50000C.csv";
+void fillHashTable(ifstream& inFile, HashTable& ht)
 {
 	string s;
-	int num = 0;
-	cout << "enter an error code: ";
-	getline(cin, s);
-	stringstream(s) >> num;
-	void(*function_array[150])();
-	unsigned char error_id[150];
-
-	function_array[0] = a;
-	error_id[0] = 3;
-	function_array[1] = b;
-	error_id[1] = 8;
-	function_array[2] = c;
-
-	error_id[2] = 5;
-
-	char i = 0;
-	for (; i < 150 && error_id[i] != num; ++i)
+	stringstream ss;
+	getline(inFile, s);//header line
+	for (long long unsigned posInFile = inFile.tellg(); getline(inFile, s); posInFile = inFile.tellg())
 	{
+		ss << s;
+		for (size_t entry = 0; entry <= 8 && getline(ss, s, DELIMITER); ++entry)
+		{
+		}
+		ss.clear();
+		ss.str("");
+		ht.push(s, posInFile);
 	}
+}
 
-	function_array[0]();
-	function_array[1]();
-	function_array[i]();
+void getInfo(ifstream& inFile, HashTable& ht)
+{
+	string s;// = "504 - 621 - 8927";
 
-	//ss.clear();
-	//ss.str("");
+	while (getline(cin, s))
+	{
+		inFile.clear();
+		inFile.seekg(ht.retrieve(s));
+		getline(inFile, s);
+		cout << s << endl;
+	}
+}
+
+
+int main()
+{
+	ifstream inFile;
+	inFile.open(FILENAME);
+	string phoneNumber;
+	stringstream ss;
+	HashTable ht(FILE_ENTRIES);
+	if (inFile)
+	{
+		fillHashTable(inFile, ht);
+		getInfo(inFile, ht);
+	}
+	else
+	{
+		cout << "file not open" << endl;
+	}
+	inFile.close();
 
 
 	return 0;
