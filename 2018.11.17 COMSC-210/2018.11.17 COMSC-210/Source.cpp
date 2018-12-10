@@ -65,21 +65,6 @@ void getInfo(ifstream& inFile, HashTable& ht)
 
 int main()
 {
-	ifstream inFile;
-	inFile.open(FILENAME);
-	string phoneNumber;
-	stringstream ss;
-	HashTable ht(FILE_ENTRIES);
-	if (inFile)
-	{
-		fillHashTable(inFile, ht);
-		getInfo(inFile, ht);
-	}
-	else
-	{
-		cout << "file not open" << endl;
-	}
-	inFile.close();
 
 
 	return 0;

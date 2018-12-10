@@ -55,6 +55,7 @@ public:
 	Type popBack();
 	int count(const Type&) const;
 	void iSort();
+	//void reverse();
 };
 template<typename Type>
 List<Type>::~List()
@@ -243,8 +244,20 @@ int List<Type>::count(const Type& n) const
 	return count;
 }
 
+/*
+template<typename Type>
+void List<Type>::reverse()
+{
+	ListNode<Type>* nodePtr=head;
+	ListNode<Type>* nextPtr = nullptr;
+	for (int i = 0; i < listSize; ++i)
+	{
+		while (nodePtr->next)
+		{
 
-
-
+		}
+	}
+}
+*/
 
 #endif
